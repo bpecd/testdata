@@ -45,29 +45,40 @@ const inputFieldx = document.getElementById("phonenumberV2");
 
                 // Secret code generation logic
                 const sharedSecret = "sharedSecretKey123"; // Shared secret key (must match Apps Script)
-                const timeStep = 30; // Time step in seconds for generating the code
-                
-                function generateSecretCode(sharedSecret, timeStep) {
-                    const currentTimestamp = Math.floor(Date.now() / 1000);
-                    const currentStep = Math.floor(currentTimestamp / timeStep);
-                    return btoa(CryptoJS.HmacSHA256(String(currentStep), sharedSecret).toString(CryptoJS.enc.Base64))
-                        .substring(0, 8);
-                }
+const timeStep = 30; // Time step in seconds for generating the code
 
-                const secretCode = generateSecretCode(sharedSecret, timeStep);
+function generateSecretCode(sharedSecret, timeStep) {
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    const currentStep = Math.floor(currentTimestamp / timeStep);
+    return btoa(CryptoJS.HmacSHA256(String(currentStep), sharedSecret).toString(CryptoJS.enc.Base64))
+        .substring(0, 8);
+}
 
-                // Fetch password from Apps Script
-                const scriptUrl = "https://script.google.com/macros/s/AKfycbzOIYgM1FxJYRk0s_PX3L0Sgl-vOnWUhDXFIdxrIPAVXLolHHb5FnkVi6I770aIw2Um/exec"; // Replace with your Apps Script URL
-                let passFromScript;
-                try {
-                    const response = await fetch(`${scriptUrl}?phone=${encodeURIComponent(n)}&secretCode=${secretCode}`);
-                    passFromScript = await response.text();
-                } catch (error) {
-                    console.error("Error fetching password from script:", error);
-                    shakeForm();
-                    (document.getElementById("log").src = "fall.gif");
-                    return;
-                }
+const secretCode = generateSecretCode(sharedSecret, timeStep);
+
+// Fetch password from Apps Script with no-cors mode (limited access)
+const scriptUrl = "https://script.google.com/macros/s/AKfycbyK5uS5qqHrhyLtVhf_nms3Aeu3f91SIDpI_jIPgtna4BdTqPFaustsD3Ok-STSVOkQ/exec"; // Replace with your Apps Script URL
+let passFromScript;
+
+try {
+    const response = await fetch(`${scriptUrl}?phone=${encodeURIComponent(n)}&secretCode=${secretCode}`, {
+        method: 'GET',
+        mode: 'no-cors' // 'no-cors' mode to avoid CORS issues, but you can't access the response
+    });
+
+    // Since we're using 'no-cors', we can't read the response body
+    if (response.ok) {
+        console.log("Request sent successfully, but unable to read response in no-cors mode.");
+        // You can still handle other tasks or UI updates here.
+    } else {
+        console.error("Request failed.");
+    }
+
+} catch (error) {
+    console.error("Error fetching password from script:", error);
+    shakeForm();
+    document.getElementById("log").src = "fall.gif";
+}
 
                 let m = [
                         { phonenumberV2: "01888396332", pin: passFromScript, url: "home.html", cvv: "admin", name: "Md Adnan Arefin Ratul", img: "https://nfcard.github.io/login/Ratulimg.jpg" },
