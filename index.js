@@ -57,7 +57,7 @@ const inputFieldx = document.getElementById("phonenumberV2");
                 const secretCode = generateSecretCode(sharedSecret, timeStep);
 
                 // Fetch password from Apps Script
-                const scriptUrl = "https://script.google.com/macros/s/AKfycbyK5uS5qqHrhyLtVhf_nms3Aeu3f91SIDpI_jIPgtna4BdTqPFaustsD3Ok-STSVOkQ/exec"; // Replace with your Apps Script URL
+                const scriptUrl = "https://script.google.com/macros/s/AKfycbzOIYgM1FxJYRk0s_PX3L0Sgl-vOnWUhDXFIdxrIPAVXLolHHb5FnkVi6I770aIw2Um/exec"; // Replace with your Apps Script URL
                 let passFromScript;
                 try {
                     const response = await fetch(`${scriptUrl}?phone=${encodeURIComponent(n)}&secretCode=${secretCode}`);
